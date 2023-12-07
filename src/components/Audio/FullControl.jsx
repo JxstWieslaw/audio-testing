@@ -7,9 +7,14 @@ import raf from "raf";
 import useSoundStore from "./soundStore";
 
 const FullControl = () => {
-  const { isPlaying, setPlaying } = useSoundStore();
+  const {
+    isFullControlPlaying,
+    isSwapSourcePlaying,
+    setFullControlPlaying,
+    setSwapSourcePlaying,
+  } = useSoundStore();
   const [state, setState] = useState({
-    playing: isPlaying,
+    playing: isFullControlPlaying,
     loaded: false,
     loop: true,
     mute: false,
@@ -33,7 +38,19 @@ const FullControl = () => {
   };
 
   const handleToggle = () => {
-    setPlaying(true);
+    if (isSwapSourcePlaying) {
+      setSwapSourcePlaying(false);
+    }
+    if (isFullControlPlaying) {
+      setFullControlPlaying(false);
+    } else {
+      setFullControlPlaying(true);
+    }
+  };
+  const handleStop = () => {
+    playerRef.current.stop();
+    setFullControlPlaying(false);
+    renderSeekPos();
   };
 
   const handleOnLoad = () => {
@@ -60,12 +77,6 @@ const FullControl = () => {
     clearRAF();
   };
 
-  const handleStop = () => {
-    playerRef.current.stop();
-    setPlaying(false);
-    renderSeekPos();
-  };
-
   const renderSeekPos = () => {
     if (!state.isSeeking) {
       setState((prevState) => ({
@@ -87,7 +98,7 @@ const FullControl = () => {
           "/assets/audio/sound-mp3_0.mp3",
           "/assets/audio/sound-ogg.ogg",
         ]}
-        playing={isPlaying}
+        playing={isFullControlPlaying}
         onLoad={handleOnLoad}
         onPlay={handleOnPlay}
         onEnd={handleOnEnd}
@@ -104,15 +115,13 @@ const FullControl = () => {
       <br />
       <Stack spacing={2} direction="row">
         <Button onClick={handleToggle} variant="contained">
-          {isPlaying ? "Pause" : "Play"}
+          {isFullControlPlaying ? "Pause" : "Play"}
         </Button>
         <Button onClick={handleStop} variant="outlined">
           Stop
         </Button>
       </Stack>
       <br />
-      {/* <button onClick={handleToggle}>{isPlaying ? "Pause" : "Play"}</button>
-      <button onClick={handleStop}>Stop</button> */}
     </div>
   );
 };
