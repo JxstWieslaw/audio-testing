@@ -26,10 +26,10 @@ const SwapSource = () => {
   };
 
   const handlePlay = () => {
-    if(isFullControlPlaying){
-      setFullControlPlaying(false)
+    if (isFullControlPlaying) {
+      setFullControlPlaying(false);
     }
-   
+
     setSwapSourcePlaying(true);
   };
 
@@ -52,9 +52,16 @@ const SwapSource = () => {
       </Stack>
       <br />
       <Stack spacing={2} direction="row">
-        <Button onClick={handleSwap} variant="outlined">
-          Swap Source
-        </Button>
+        {isSwapSourcePlaying && (
+          <Button onClick={handleSwap} variant="outlined">
+            Swap Source
+          </Button>
+        )}
+        {!isSwapSourcePlaying && (
+          <Button disabled onClick={handleSwap} variant="outlined">
+            Swap Source
+          </Button>
+        )}
       </Stack>
       <br />
       <Stack spacing={2} direction="row">
